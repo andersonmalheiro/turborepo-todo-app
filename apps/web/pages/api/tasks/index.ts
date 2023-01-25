@@ -20,7 +20,6 @@ function createTask(data: CreateTask, res: NextApiResponse) {
   if (task.success) {
     const payload: Task = {
       ...task.data,
-      done: false,
       id: randomString(),
     };
 

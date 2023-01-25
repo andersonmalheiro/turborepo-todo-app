@@ -1,6 +1,9 @@
-import { Task } from "model/Task";
+import Task from "components/Task";
+import { Task as TaskModel } from "model/Task";
 import { GetServerSideProps } from "next";
 import { FormEvent, useState } from "react";
+import { Container, TaskList, Title } from "styles/Home.styles";
+import { Button } from "ui";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const response = await fetch("http://localhost:3000/api/tasks");
@@ -14,15 +17,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 interface HomeProps {
-  tasks: Array<Task>;
+  tasks: Array<TaskModel>;
 }
 
 export default function Home({ tasks }: HomeProps) {
-  const [data, setData] = useState<Array<Task>>(tasks);
-  const [task, setTask] = useState<Task>({
+  const [data, setData] = useState<Array<TaskModel>>(tasks);
+  const [task, setTask] = useState<TaskModel>({
     description: "",
     done: false,
-  } as Task);
+  } as TaskModel);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -67,9 +70,9 @@ export default function Home({ tasks }: HomeProps) {
   };
 
   return (
-    <div>
-      <h1>Tasks</h1>
-      <button onClick={fetchTasks}>sync</button>
+    <Container>
+      <Title>Tasks</Title>
+      <Button onClick={fetchTasks}>sync</Button>
 
       <form onSubmit={createTask}>
         <label htmlFor="description">
@@ -80,7 +83,6 @@ export default function Home({ tasks }: HomeProps) {
           id="description"
           name="description"
           onChange={handleFormChange}
-          defaultValue={task.description}
           value={task.description}
           required
         />
@@ -94,19 +96,16 @@ export default function Home({ tasks }: HomeProps) {
           name="done"
           onChange={handleFormChange}
           defaultChecked={task.done}
-          checked={task.done}
         />
 
-        <button type="submit">
-          Create task
-        </button>
+        <Button type="submit">Create task</Button>
       </form>
 
-      <ul>
+      <TaskList>
         {data.map((task) => (
-          <li key={task.id}>{task.description}</li>
+          <Task key={task.id} {...task} />
         ))}
-      </ul>
-    </div>
+      </TaskList>
+    </Container>
   );
 }
