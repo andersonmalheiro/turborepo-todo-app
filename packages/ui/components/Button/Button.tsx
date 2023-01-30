@@ -19,13 +19,13 @@ const variantMapping: Record<ButtonVariant, FC<ButtonProps>> = {
   secondary: SecondaryButton,
 };
 
-export const Button = ({
+export default function Button({
   children,
   onClick,
   type = "button",
   variant = "primary",
   ...props
-}: ButtonProps) => {
+}: ButtonProps) {
   const handleOnClick = useCallback(
     (e: MouseEvent) => {
       if (onClick) {
@@ -42,4 +42,4 @@ export const Button = ({
       {children}
     </CurrentVariant>
   );
-};
+}

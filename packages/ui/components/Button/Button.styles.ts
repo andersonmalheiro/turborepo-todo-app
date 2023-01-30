@@ -14,6 +14,7 @@ export const BaseButton = styled.button`
   transition: all 0.3s ease-in-out;
   cursor: pointer;
   font-weight: bold;
+  height: 30px;
 
   &:hover {
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
