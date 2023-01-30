@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, TaskDescription } from "./Task.styles";
 
 interface TaskProps {
@@ -7,10 +7,16 @@ interface TaskProps {
 }
 
 export default function Task({ description, done }: TaskProps) {
+  const [isDone, setIsDone] = useState(done);
+
   return (
     <Container>
-      <TaskDescription done={done}>{description}</TaskDescription>
-      <input type="checkbox" defaultChecked={done} />
+      <TaskDescription done={isDone}>{description}</TaskDescription>
+      <input
+        type="checkbox"
+        checked={done}
+        onChange={(e) => setIsDone(e.target.checked)}
+      />
     </Container>
   );
 }
