@@ -1,9 +1,9 @@
 import Task from "components/Task";
+import TaskForm from "components/TaskForm";
 import { Task as TaskModel } from "model/Task";
 import { GetServerSideProps } from "next";
-import { FormEvent, useState } from "react";
-import { Container, TaskList, Title } from "styles/Home.styles";
-import { Button } from "ui";
+import { useState } from "react";
+import { Column, Container, Grid, TaskList, Title } from "styles/Home.styles";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const response = await fetch("http://localhost:3000/api/tasks");
@@ -22,18 +22,6 @@ interface HomeProps {
 
 export default function Home({ tasks }: HomeProps) {
   const [data, setData] = useState<Array<TaskModel>>(tasks);
-  const [task, setTask] = useState<TaskModel>({
-    description: "",
-    done: false,
-  } as TaskModel);
-
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const { type, name } = e.target;
-    const inputValue = type === "checkbox" ? e.target.checked : e.target.value;
-
-    setTask({ ...task, [name]: inputValue });
-  };
 
   const fetchTasks = async () => {
     try {
@@ -45,67 +33,22 @@ export default function Home({ tasks }: HomeProps) {
     }
   };
 
-  const createTask = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      await fetch("/api/tasks", {
-        method: "POST",
-        body: JSON.stringify({
-          data: task,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      setTask({
-        description: "",
-        done: false,
-      });
-      await fetchTasks();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   return (
     <Container>
       <Title>Tasks</Title>
-      <Button onClick={fetchTasks}>sync</Button>
+      <Grid>
+        <Column>
+          <TaskForm onAdd={fetchTasks} />
+        </Column>
 
-      <form onSubmit={createTask}>
-        <label htmlFor="description">
-          <strong>Description</strong>
-        </label>
-        <input
-          type="text"
-          id="description"
-          name="description"
-          onChange={handleFormChange}
-          value={task.description}
-          required
-        />
-
-        <label htmlFor="done">
-          <strong>Done</strong>
-        </label>
-        <input
-          type="checkbox"
-          id="done"
-          name="done"
-          onChange={handleFormChange}
-          defaultChecked={task.done}
-        />
-
-        <Button type="submit">Create task</Button>
-      </form>
-
-      <TaskList>
-        {data.map((task) => (
-          <Task key={task.id} {...task} />
-        ))}
-      </TaskList>
+        <Column>
+          <TaskList>
+            {data.map((task) => (
+              <Task key={task.id} {...task} />
+            ))}
+          </TaskList>
+        </Column>
+      </Grid>
     </Container>
   );
 }
